@@ -67,13 +67,45 @@ double maxwell_juettner_Q(struct parameters * params)
 
 /*maxwell_juettner_V: fitting formula for the emissivity (polarized in Stokes V)
  *                    produced by a Maxwell-Juettner (relativistic thermal) 
- *                    distribution of electrons. (Eq. 29, 31 of [1])
+ *                    distribution of electrons. 
  *
  *@params: struct of parameters params
  *@returns: fit to the emissivity, polarized in Stokes V, for the given 
  *          parameters for a Maxwell-Juettner distribution.
  */
 double maxwell_juettner_V(struct parameters * params)
+{
+  double nu_c = get_nu_c(*params);
+
+  double nu_s = (3./2.)*nu_c*sin(params->observer_angle)*params->theta_e
+                *params->theta_e;
+
+  double X = params->nu/nu_s;
+
+  double prefactor =  2 * (params->electron_density
+		      * pow(params->electron_charge, 2.))
+                      /(params->speed_light * 3 * pow(3, 0.5));
+	
+  double term1 = params->nu / (pow(params->theta_e, 3)*tan(params->observer_angle));
+	
+  double term2 = ((1.8138 * pow(X, -1.)) +( 3.423 * pow(X, -(2./3.))) +
+                 (0.02955 * pow(X, -(1./2.))) +( 2.0377 * pow(X, -(1./3.))))
+                 *exp(-1.8899 * pow(X, 1./3.));
+	
+  double ans = prefactor*term1*term2;
+	
+  return ans;                                                                                           
+  }
+
+/*maxwell_juettner_V: fitting formula for the emissivity (polarized in Stokes V)
+ *                    produced by a Maxwell-Juettner (relativistic thermal) 
+ *                    distribution of electrons. (Eq. 29, 31 of [1])
+ *
+ *@params: struct of parameters params
+ *@returns: fit to the emissivity, polarized in Stokes V, for the given 
+ *          parameters for a Maxwell-Juettner distribution.
+ */
+double retired_maxwell_juettner_V(struct parameters * params)
 {
   double nu_c = get_nu_c(*params);
 
